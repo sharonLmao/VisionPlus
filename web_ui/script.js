@@ -396,13 +396,93 @@ function drawBlendShapes(el, blendShapes) {
     document.title = title;
 
     window.requestAnimationFrame(function () {
-        const right_left_speed = isMovingRight ? window.right_speed : isMovingLeft ? window.left_speed : 0;
-        const up_down_speed = isMovingDown ? window.down_speed : isMovingUp ? window.up_speed : 0;
+        // const right_left_speed = isMovingRight ? window.right_speed : isMovingLeft ? window.left_speed : 0;
+        // const up_down_speed = isMovingDown ? window.down_speed : isMovingUp ? window.up_speed : 0;
         window.electronAPI.send('face-detection', {
-            x: (isMovingRight ? rightVector : isMovingLeft ? leftVector : 0) * (isJawOpen ? right_left_speed * window.r_l_speed_reducer / 100 : right_left_speed),
-            y: (isMovingDown ? downVector : isMovingUp ? upVector : 0) * (isJawOpen ? up_down_speed * window.u_d_speed_reducer / 100 : up_down_speed),
-            puck: isMouthPuck,
-            puck_vector: mouthVector
+            // x: (isMovingRight ? rightVector : isMovingLeft ? leftVector : 0) * (isJawOpen ? right_left_speed * window.r_l_speed_reducer / 100 : right_left_speed),
+            // y: (isMovingDown ? downVector : isMovingUp ? upVector : 0) * (isJawOpen ? up_down_speed * window.u_d_speed_reducer / 100 : up_down_speed),
+            // puck: isMouthPuck,
+            // puck_vector: mouthVector,
+            right_speed: window.right_speed,
+            down_speed: window.down_speed,
+            left_speed: window.left_speed,
+            up_speed: window.up_speed,
+            flags: {
+                // isMovingRight,
+                rightVector,
+                //
+                // isMovingDown,
+                downVector,
+                //
+                // isMovingUp,
+                upVector,
+                //
+                // isMovingLeft,
+                leftVector,
+                //
+                // isJawOpen,
+                // jawVector,
+                // //
+                // isBrowUp,
+                // browVector,
+                // //
+                // isMouthPuck,
+                // mouthVector,
+            },
+            // everything: {
+            //     _neutral,
+            //     browDownLeft,
+            //     browDownRight,
+            //     browInnerUp,
+            //     browOuterUpLeft,
+            //     browOuterUpRight,
+            //     cheekPuff,
+            //     cheekSquintLeft,
+            //     cheekSquintRight,
+            //     eyeBlinkLeft,
+            //     eyeBlinkRight,
+            //     eyeLookDownLeft,
+            //     eyeLookDownRight,
+            //     eyeLookInLeft,
+            //     eyeLookInRight,
+            //     eyeLookOutLeft,
+            //     eyeLookOutRight,
+            //     eyeLookUpLeft,
+            //     eyeLookUpRight,
+            //     eyeSquintLeft,
+            //     eyeSquintRight,
+            //     eyeWideLeft,
+            //     eyeWideRight,
+            //     jawForward,
+            //     jawLeft,
+            //     jawOpen,
+            //     jawRight,
+            //     mouthClose,
+            //     mouthDimpleLeft,
+            //     mouthDimpleRight,
+            //     mouthFrownLeft,
+            //     mouthFrownRight,
+            //     mouthFunnel,
+            //     mouthLeft,
+            //     mouthLowerDownLeft,
+            //     mouthLowerDownRight,
+            //     mouthPressLeft,
+            //     mouthPressRight,
+            //     mouthPucker,
+            //     mouthRight,
+            //     mouthRollLower,
+            //     mouthRollUpper,
+            //     mouthShrugLower,
+            //     mouthShrugUpper,
+            //     mouthSmileLeft,
+            //     mouthSmileRight,
+            //     mouthStretchLeft,
+            //     mouthStretchRight,
+            //     mouthUpperUpLeft,
+            //     mouthUpperUpRight,
+            //     noseSneerLeft,
+            //     noseSneerRight,
+            // }
         });
     });
     // ------
