@@ -136,7 +136,8 @@ function enableCam(deviceId, stayOnline = false) {
         // getUsermedia parameters.
         const constraints = {
             video: {
-                deviceId: { exact: deviceId }
+                deviceId: { exact: deviceId },
+                zoom: true
             }
         };
         // Activate the webcam stream.
@@ -144,7 +145,35 @@ function enableCam(deviceId, stayOnline = false) {
             video.srcObject = stream;
             video.addEventListener("loadeddata", predictWebcam);
             setTimeout(() => window.electronAPI.send('webcam_active', 'ok'), 1000);
+            const [track] = stream.getVideoTracks();
+            const capabilities = track.getCapabilities();
+            const settings = track.getSettings();
+            const zoom_webcam = document.getElementById('zoom_webcam');
+            const zoom_webcam_input = document.getElementById('zoom_webcam_input');
+            // Check whether zoom is supported or not.
+            if (!('zoom' in settings)) return document.getElementById('zoom_webcam_error').textContent = 'Zoom is not supported by ' + track.label;
+            // Map zoom to a slider element.
+            zoom_webcam.min = capabilities.zoom.min;
+            zoom_webcam_input.min = capabilities.zoom.min;
+            zoom_webcam.max = capabilities.zoom.max;
+            zoom_webcam_input.max = capabilities.zoom.max;
+            zoom_webcam.step = capabilities.zoom.step;
+            zoom_webcam_input.step = capabilities.zoom.step;
+            zoom_webcam.value = settings.zoom;
+            zoom_webcam_input.value = settings.zoom;
+            zoom_webcam.onchange = function(event) {
+              track.applyConstraints({advanced: [ {zoom: event.target.value} ]});
+            }
+            zoom_webcam_input.onchange = function(event) {
+              track.applyConstraints({advanced: [ {zoom: event.target.value} ]});
+            }
+            zoom_webcam.hidden = false;
+            zoom_webcam_input.hidden = false;
+            zoom_webcam.disabled = false;
+            zoom_webcam_input.disabled = false;
         }).catch((e) => {
+            console.error("Webcam Error:", e);
+            alert("Webcam Error:\n" + e.message);
             window.electronAPI.send('error', 'ok');
         });
     }, 16);
@@ -202,9 +231,15 @@ function drawBlendShapes(el, blendShapes) {
     }
     console.log(blendShapes[0]);
     // Send to backend
+    const _neutral = blendShapes[0].categories[0];
     const browDownLeft = blendShapes[0].categories[1];
     const browDownRight = blendShapes[0].categories[2];
     const browInnerUp = blendShapes[0].categories[3];
+    const browOuterUpLeft = blendShapes[0].categories[4];
+    const browOuterUpRight = blendShapes[0].categories[5];
+    const cheekPuff = blendShapes[0].categories[6];
+    const cheekSquintLeft = blendShapes[0].categories[7];
+    const cheekSquintRight = blendShapes[0].categories[8];
     const eyeBlinkLeft = blendShapes[0].categories[9];
     const eyeBlinkRight = blendShapes[0].categories[10];
     const eyeLookDownLeft = blendShapes[0].categories[11];
@@ -219,8 +254,35 @@ function drawBlendShapes(el, blendShapes) {
     const eyeSquintRight = blendShapes[0].categories[20];
     const eyeWideLeft = blendShapes[0].categories[21];
     const eyeWideRight = blendShapes[0].categories[22];
+    const jawForward = blendShapes[0].categories[23];
+    const jawLeft = blendShapes[0].categories[24];
     const jawOpen = blendShapes[0].categories[25];
+    const jawRight = blendShapes[0].categories[26];
+    const mouthClose = blendShapes[0].categories[27];
+    const mouthDimpleLeft = blendShapes[0].categories[28];
+    const mouthDimpleRight = blendShapes[0].categories[29];
+    const mouthFrownLeft = blendShapes[0].categories[30];
+    const mouthFrownRight = blendShapes[0].categories[31];
+    const mouthFunnel = blendShapes[0].categories[32];
+    const mouthLeft = blendShapes[0].categories[33];
+    const mouthLowerDownLeft = blendShapes[0].categories[34];
+    const mouthLowerDownRight = blendShapes[0].categories[35];
+    const mouthPressLeft = blendShapes[0].categories[36];
+    const mouthPressRight = blendShapes[0].categories[37];
     const mouthPucker = blendShapes[0].categories[38];
+    const mouthRight = blendShapes[0].categories[39];
+    const mouthRollLower = blendShapes[0].categories[40];
+    const mouthRollUpper = blendShapes[0].categories[41];
+    const mouthShrugLower = blendShapes[0].categories[42];
+    const mouthShrugUpper = blendShapes[0].categories[43];
+    const mouthSmileLeft = blendShapes[0].categories[44];
+    const mouthSmileRight = blendShapes[0].categories[45];
+    const mouthStretchLeft = blendShapes[0].categories[46];
+    const mouthStretchRight = blendShapes[0].categories[47];
+    const mouthUpperUpLeft = blendShapes[0].categories[48];
+    const mouthUpperUpRight = blendShapes[0].categories[49];
+    const noseSneerLeft = blendShapes[0].categories[50];
+    const noseSneerRight = blendShapes[0].categories[51];
     // up
     let isMovingUp = (eyeLookUpLeft.score >= window.up_threshold && eyeLookUpRight.score >= window.up_threshold);
     let upVector = -1 * ((eyeLookUpLeft.score + eyeLookUpRight.score) / 2);

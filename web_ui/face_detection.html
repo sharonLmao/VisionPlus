@@ -39,6 +39,8 @@
           <span class="mdc-button__ripple"></span>
           <span class="mdc-button__label">🔇 Mute Sounds</span>
         </button>
+        <p>🔼 Zoom slider: <span id="zoom_webcam_error" style="color:red;font-weight:bold;"></span><span style="font-weight:bold;" id="zoom_webcam_span"></span><br><input disabled type="number" min="0.0" max="100.0" value="" step="0.1" id="zoom_webcam_input" onchange="window.zoom_webcam = this.value;document.getElementById('zoom_webcam_span').textContent = this.value;document.getElementById('zoom_webcam').value = this.value;"></p>
+        <input id="zoom_webcam" disabled type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.zoom_webcam = this.value;document.getElementById('zoom_webcam_span').textContent = this.value;document.getElementById('zoom_webcam_input').value = this.value;">
         <hr>
         <!-- Speed Sliders: -->
         <h1>Speed Sliders:</h1>
