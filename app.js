@@ -25,7 +25,7 @@ async function playSound(file) {
         await sound.play(path.join(__dirname, file), volume);
         // console.log("Play", file)
     } catch(e) {
-        // console.log("Error playing file", file, e)
+        console.log("Error playing file", file, e)
     }
 }
 
@@ -82,12 +82,12 @@ function createMouse() {
     let is_mouse_down = false;
     playSound('sounds/Loading.mp3');
     ipcMain.on('mute', async (event, data) => {
-        await playSound('sounds/Mute.mp3');
+        await playSound('sounds/Muted.mp3');
         muted = true;
     });
     ipcMain.on('unmute', async (event, data) => {
         muted = false;
-        await playSound('sounds/Unmute.mp3');
+        await playSound('sounds/Unmuted.mp3');
     });
     ipcMain.on('loaded', (event, data) => {
         playSound('sounds/Loaded.mp3');
