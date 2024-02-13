@@ -78,6 +78,11 @@ function createMouse() {
     ipcMain.on('loaded', (event, data) => {
         playSound('sounds/Loaded.mp3');
     });
+    ipcMain.on('center', (event, data) => {
+        playSound('sounds/Center.mp3');
+        current_x = Math.floor((screen_real_width - windowWidth) / 2);
+        current_y = Math.floor((screen_real_height - windowHeight) / 2);
+    });
     ipcMain.on('Play', (event, data) => {
         playSound('sounds/' + data + '.mp3');
     });

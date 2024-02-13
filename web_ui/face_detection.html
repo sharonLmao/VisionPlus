@@ -27,6 +27,10 @@
     <section id="demos" class="invisible">
       <div>
         <select id="cameraSelect"></select>
+        <button onclick="window.electronAPI.send('center', 'ok');" class="mdc-button mdc-button--raised">
+          <span class="mdc-button__ripple"></span>
+          <span class="mdc-button__label">Center Mouse - Start Calibration</span>
+        </button>
         <p>Right Left Speed slider: <span id="right_left_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="right_left_speed_input" onchange="window.right_left_speed = this.value;document.getElementById('right_left_speed_span').textContent = this.value;document.getElementById('right_left_speed').value = this.value;"></p>
         <input id="right_left_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.right_left_speed = this.value;document.getElementById('right_left_speed_span').textContent = this.value;document.getElementById('right_left_speed_input').value = this.value;">
         <p>Up Down Speed slider: <span id="up_down_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="up_down_speed_input" onchange="window.up_down_speed = this.value;document.getElementById('up_down_speed_span').textContent = this.value;document.getElementById('up_down_speed').value = this.value;"></p>
@@ -82,6 +86,7 @@
       document.getElementById('right_threshold_span').textContent = window.right_threshold;
       document.getElementById('left_threshold_span').textContent = window.left_threshold;
       document.getElementById('jaw_threshold_span').textContent = window.jaw_threshold;
+      document.getElementById('mouth_threshold_span').textContent = window.mouth_threshold;
       document.getElementById('brow_threshold_span').textContent = window.brow_threshold;
       document.getElementById('brow_right_left_speed_span').textContent = window.brow_right_left_speed;
       document.getElementById('brow_up_down_speed_span').textContent = window.brow_up_down_speed;
@@ -93,6 +98,7 @@
       document.getElementById('right_threshold_input').value = window.right_threshold;
       document.getElementById('left_threshold_input').value = window.left_threshold;
       document.getElementById('jaw_threshold_input').value = window.jaw_threshold;
+      document.getElementById('mouth_threshold_input').value = window.mouth_threshold;
       document.getElementById('brow_threshold_input').value = window.brow_threshold;
       document.getElementById('brow_right_left_speed_input').value = window.brow_right_left_speed;
       document.getElementById('brow_up_down_speed_input').value = window.brow_up_down_speed;
@@ -104,6 +110,7 @@
       document.getElementById('right_threshold').value = window.right_threshold;
       document.getElementById('left_threshold').value = window.left_threshold;
       document.getElementById('jaw_threshold').value = window.jaw_threshold;
+      document.getElementById('mouth_threshold').value = window.mouth_threshold;
       document.getElementById('brow_threshold').value = window.brow_threshold;
       document.getElementById('brow_right_left_speed').value = window.brow_right_left_speed;
       document.getElementById('brow_up_down_speed').value = window.brow_up_down_speed;
