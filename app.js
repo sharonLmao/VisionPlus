@@ -81,13 +81,13 @@ function createMouse() {
     }, refresh_speed);
     let is_mouse_down = false;
     playSound('sounds/Loading.mp3');
-    ipcMain.on('mute', (event, data) => {
-        playSound('sounds/Mute.mp3');
+    ipcMain.on('mute', async (event, data) => {
+        await playSound('sounds/Mute.mp3');
         muted = true;
     });
-    ipcMain.on('unmute', (event, data) => {
+    ipcMain.on('unmute', async (event, data) => {
         muted = false;
-        playSound('sounds/Unmute.mp3');
+        await playSound('sounds/Unmute.mp3');
     });
     ipcMain.on('loaded', (event, data) => {
         playSound('sounds/Loaded.mp3');
