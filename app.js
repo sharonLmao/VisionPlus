@@ -144,8 +144,8 @@ function createMouse() {
         const center_x = screen_real_width / 2;
         const center_y = screen_real_height / 2;
         // Normalize values
-        const normalized_x = data.flags.rightVector - data.flags.leftVector;
-        const normalized_y = data.flags.downVector - data.flags.upVector;
+        const normalized_x = (data.flags.rightVector * data.flags.right_speed) - (data.flags.leftVector * data.flags.left_speed);
+        const normalized_y = (data.flags.downVector * data.flags.down_speed) - (data.flags.upVector * data.flags.up_speed);
         // Scale by screen dimensions
         const pixel_displacement_x = normalized_x * screen_real_width / 2;
         const pixel_displacement_y = normalized_y * screen_real_height / 2;

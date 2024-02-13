@@ -285,7 +285,7 @@ function drawBlendShapes(el, blendShapes) {
     const noseSneerRight = blendShapes[0].categories[51];
     // up
     let isMovingUp = (eyeLookUpLeft.score >= window.up_threshold && eyeLookUpRight.score >= window.up_threshold);
-    let upVector = -1 * ((eyeLookUpLeft.score + eyeLookUpRight.score) / 2);
+    let upVector = (eyeLookUpLeft.score + eyeLookUpRight.score) / 2;
     if (isMovingUp) {
         if (!isUpGlobal) {
             isUpGlobal = true;
@@ -324,7 +324,7 @@ function drawBlendShapes(el, blendShapes) {
     }
     // left
     let isMovingLeft = eyeLookInRight.score >= window.left_threshold;
-    let leftVector = -1 * eyeLookInRight.score;
+    let leftVector = eyeLookInRight.score;
     if (isMovingLeft) {
         if (!isLeftGlobal) {
             isLeftGlobal = true;
@@ -403,11 +403,11 @@ function drawBlendShapes(el, blendShapes) {
             // y: (isMovingDown ? downVector : isMovingUp ? upVector : 0) * (isJawOpen ? up_down_speed * window.u_d_speed_reducer / 100 : up_down_speed),
             // puck: isMouthPuck,
             // puck_vector: mouthVector,
-            right_speed: window.right_speed,
-            down_speed: window.down_speed,
-            left_speed: window.left_speed,
-            up_speed: window.up_speed,
             flags: {
+                right_speed: window.right_speed,
+                down_speed: window.down_speed,
+                left_speed: window.left_speed,
+                up_speed: window.up_speed,
                 // isMovingRight,
                 rightVector,
                 //
