@@ -324,8 +324,8 @@ function drawBlendShapes(el, blendShapes) {
     //     }
     // }
     // left
-    let isMovingLeft = categories.eyeLookInRight.score >= window.left_threshold;
-    let leftVector = categories.eyeLookInRight.score;
+    let isMovingLeft = categories.eyeLookOutLeft.score >= window.left_threshold;
+    let leftVector = categories.eyeLookOutLeft.score;
     // if (isMovingLeft) {
     //     if (!isLeftGlobal) {
     //         isLeftGlobal = true;
@@ -498,7 +498,7 @@ function drawBlendShapes(el, blendShapes) {
         shape.categoryName == 'eyeLookDownLeft' ||
         shape.categoryName == 'eyeLookDownRight' ||
         shape.categoryName == 'eyeLookOutRight' ||
-        shape.categoryName == 'eyeLookInRight' ||
+        shape.categoryName == 'eyeLookOutLeft' ||
         shape.categoryName == 'browInnerUp' ||
         shape.categoryName == 'jawOpen' ||
         shape.categoryName == 'mouthPucker') isBold = 'font-weight:bold;';
@@ -511,7 +511,7 @@ function drawBlendShapes(el, blendShapes) {
         // right
         if (shape.categoryName == 'eyeLookOutRight') color = 'blue';
         // left
-        if (shape.categoryName == 'eyeLookInRight') color = 'purple';
+        if (shape.categoryName == 'eyeLookOutLeft') color = 'purple';
         // brow
         if (shape.categoryName == 'browInnerUp') color = 'brown';
         // jaw
