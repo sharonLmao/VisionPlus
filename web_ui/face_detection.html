@@ -10,32 +10,51 @@
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <script>
-      window.right_left_speed = 36;
-      window.up_down_speed = 61;
-      window.up_threshold = 0.04;
-      window.down_threshold = 0.09;
-      window.right_threshold = 0.06;
-      window.left_threshold = 0.09;
-      window.mouth_threshold = 0.5;
-      window.jaw_threshold = 0.5;
-      window.brow_threshold = 0.5;
-      window.brow_right_left_speed = 50;
-      window.brow_up_down_speed = 50;
+      window.right_speed = 100.0;
+      window.left_speed = 100.0;
+      window.up_speed = 100.0;
+      window.down_speed = 100.0;
+      window.up_threshold = 100.0;
+      window.down_threshold = 100.0;
+      window.right_threshold = 100.0;
+      window.left_threshold = 100.0;
+      window.mouth_threshold = 100.0;
+      window.jaw_threshold = 100.0;
+      window.brow_threshold = 100.0;
+      window.r_l_speed_reducer = 100.0;
+      window.u_d_speed_reducer = 100.0;
     </script>
   </head>
   <body>
     <section id="demos" class="invisible">
       <div>
+        <!-- General Settings: -->
+        <h1>General Settings:</h1>
         <select id="cameraSelect"></select>
         <button onclick="window.electronAPI.send('center', 'ok');" class="mdc-button mdc-button--raised">
           <span class="mdc-button__ripple"></span>
           <span class="mdc-button__label">👀 Center Mouse - Start Calibration</span>
         </button>
-        <p>◀▶ Right Left Speed slider: <span id="right_left_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="right_left_speed_input" onchange="window.right_left_speed = this.value;document.getElementById('right_left_speed_span').textContent = this.value;document.getElementById('right_left_speed').value = this.value;"></p>
-        <input id="right_left_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.right_left_speed = this.value;document.getElementById('right_left_speed_span').textContent = this.value;document.getElementById('right_left_speed_input').value = this.value;">
-        <p>🔼🔽 Up Down Speed slider: <span id="up_down_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="up_down_speed_input" onchange="window.up_down_speed = this.value;document.getElementById('up_down_speed_span').textContent = this.value;document.getElementById('up_down_speed').value = this.value;"></p>
-        <input id="up_down_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.up_down_speed = this.value;document.getElementById('up_down_speed_span').textContent = this.value;document.getElementById('up_down_speed_input').value = this.value;">
         <hr>
+        <!-- Speed Sliders: -->
+        <h1>Speed Sliders:</h1>
+        <p>🔼 Up speed slider: <span id="up_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="up_speed_input" onchange="window.up_speed = this.value;document.getElementById('up_speed_span').textContent = this.value;document.getElementById('up_speed').value = this.value;"></p>
+        <input id="up_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.up_speed = this.value;document.getElementById('up_speed_span').textContent = this.value;document.getElementById('up_speed_input').value = this.value;">
+        <div style="display:flex;gap:10px;">
+          <div>
+            <p>◀ Left speed slider: <span id="left_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="left_speed_input" onchange="window.left_speed = this.value;document.getElementById('left_speed_span').textContent = this.value;document.getElementById('left_speed').value = this.value;"></p>
+            <input id="left_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.left_speed = this.value;document.getElementById('left_speed_span').textContent = this.value;document.getElementById('left_speed_input').value = this.value;">
+          </div>
+          <div>
+            <p>▶ Right speed slider: <span id="right_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="right_speed_input" onchange="window.right_speed = this.value;document.getElementById('right_speed_span').textContent = this.value;document.getElementById('right_speed').value = this.value;"></p>
+            <input id="right_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.right_speed = this.value;document.getElementById('right_speed_span').textContent = this.value;document.getElementById('right_speed_input').value = this.value;">
+          </div>
+        </div>
+        <p>🔽 Down speed slider: <span id="down_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="down_speed_input" onchange="window.down_speed = this.value;document.getElementById('down_speed_span').textContent = this.value;document.getElementById('down_speed').value = this.value;"></p>
+        <input id="down_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.down_speed = this.value;document.getElementById('down_speed_span').textContent = this.value;document.getElementById('down_speed_input').value = this.value;">
+        <hr>
+        <!-- Detection Thresholds -->
+        <h1>Detection Thresholds:</h1>
         <p>🔼 Up Threshold slider: <span id="up_threshold_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="up_threshold_input" onchange="window.up_threshold = this.value;document.getElementById('up_threshold_span').textContent = this.value;document.getElementById('up_threshold').value = this.value;"></p>
         <input id="up_threshold" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.up_threshold = this.value;document.getElementById('up_threshold_span').textContent = this.value;document.getElementById('up_threshold_input').value = this.value;">
         <div style="display:flex;gap:10px;">
@@ -51,6 +70,7 @@
         <p>🔽 Down Threshold slider: <span id="down_threshold_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="down_threshold_input" onchange="window.down_threshold = this.value;document.getElementById('down_threshold_span').textContent = this.value;document.getElementById('down_threshold').value = this.value;"></p>
         <input id="down_threshold" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.down_threshold = this.value;document.getElementById('down_threshold_span').textContent = this.value;document.getElementById('down_threshold_input').value = this.value;">
         <hr>
+        <!--  -->
         <p>👄 Mouth Threshold slider: <span id="mouth_threshold_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="mouth_threshold_input" onchange="window.mouth_threshold = this.value;document.getElementById('mouth_threshold_span').textContent = this.value;document.getElementById('mouth_threshold').value = this.value;"></p>
         <input id="mouth_threshold" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.mouth_threshold = this.value;document.getElementById('mouth_threshold_span').textContent = this.value;document.getElementById('mouth_threshold_input').value = this.value;">
         <hr>
@@ -59,10 +79,10 @@
         <hr>
         <p>😧 Brow Threshold slider: <span id="brow_threshold_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="brow_threshold_input" onchange="window.brow_threshold = this.value;document.getElementById('brow_threshold_span').textContent = this.value;document.getElementById('brow_threshold').value = this.value;"></p>
         <input id="brow_threshold" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.brow_threshold = this.value;document.getElementById('brow_threshold_span').textContent = this.value;document.getElementById('brow_threshold_input').value = this.value;">
-        <p>◀▶ Brow Right Left Speed Reducer slider: (%) <span id="brow_right_left_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="brow_right_left_speed_input" onchange="window.brow_right_left_speed = this.value;document.getElementById('brow_right_left_speed_span').textContent = this.value;document.getElementById('brow_right_left_speed').value = this.value;"></p>
-        <input id="brow_right_left_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.brow_right_left_speed = this.value;document.getElementById('brow_right_left_speed_span').textContent = this.value;document.getElementById('brow_right_left_speed_input').value = this.value;">
-        <p>🔼🔽 Brow Up Down Speed Reducer slider: (%) <span id="brow_up_down_speed_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="brow_up_down_speed_input" onchange="window.brow_up_down_speed = this.value;document.getElementById('brow_up_down_speed_span').textContent = this.value;document.getElementById('brow_up_down_speed').value = this.value;"></p>
-        <input id="brow_up_down_speed" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.brow_up_down_speed = this.value;document.getElementById('brow_up_down_speed_span').textContent = this.value;document.getElementById('brow_up_down_speed_input').value = this.value;">
+        <p>◀▶ Brow Right Left Speed Reducer slider: (%) <span id="r_l_speed_reducer_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="r_l_speed_reducer_input" onchange="window.r_l_speed_reducer = this.value;document.getElementById('r_l_speed_reducer_span').textContent = this.value;document.getElementById('r_l_speed_reducer').value = this.value;"></p>
+        <input id="r_l_speed_reducer" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.r_l_speed_reducer = this.value;document.getElementById('r_l_speed_reducer_span').textContent = this.value;document.getElementById('r_l_speed_reducer_input').value = this.value;">
+        <p>🔼🔽 Brow Up Down Speed Reducer slider: (%) <span id="u_d_speed_reducer_span"></span><br><input type="number" min="0.0" max="100.0" value="" step="0.1" id="u_d_speed_reducer_input" onchange="window.u_d_speed_reducer = this.value;document.getElementById('u_d_speed_reducer_span').textContent = this.value;document.getElementById('u_d_speed_reducer').value = this.value;"></p>
+        <input id="u_d_speed_reducer" type="range" min="0.0" max="100.0" value="" step="0.1" class="slider" onchange="window.u_d_speed_reducer = this.value;document.getElementById('u_d_speed_reducer_span').textContent = this.value;document.getElementById('u_d_speed_reducer_input').value = this.value;">
       </div>
       <div id="liveView" class="videoView">
         <!-- <button id="webcamButton" class="mdc-button mdc-button--raised">
@@ -70,7 +90,7 @@
               <span class="mdc-button__label">ENABLE WEBCAM</span>
             </button> -->
         <div style="position: relative;">
-          <video id="webcam" style="position: abso" autoplay playsinline></video>
+          <video id="webcam" autoplay playsinline></video>
           <canvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
         </div>
       </div>
@@ -79,8 +99,10 @@
       </div>
     </section>
     <script>
-      document.getElementById('right_left_speed_span').textContent = window.right_left_speed;
-      document.getElementById('up_down_speed_span').textContent = window.up_down_speed;
+      document.getElementById('right_speed_span').textContent = window.right_speed;
+      document.getElementById('left_speed_span').textContent = window.left_speed;
+      document.getElementById('up_speed_span').textContent = window.up_speed;
+      document.getElementById('down_speed_span').textContent = window.down_speed;
       document.getElementById('up_threshold_span').textContent = window.up_threshold;
       document.getElementById('down_threshold_span').textContent = window.down_threshold;
       document.getElementById('right_threshold_span').textContent = window.right_threshold;
@@ -88,11 +110,13 @@
       document.getElementById('jaw_threshold_span').textContent = window.jaw_threshold;
       document.getElementById('mouth_threshold_span').textContent = window.mouth_threshold;
       document.getElementById('brow_threshold_span').textContent = window.brow_threshold;
-      document.getElementById('brow_right_left_speed_span').textContent = window.brow_right_left_speed;
-      document.getElementById('brow_up_down_speed_span').textContent = window.brow_up_down_speed;
+      document.getElementById('r_l_speed_reducer_span').textContent = window.r_l_speed_reducer;
+      document.getElementById('u_d_speed_reducer_span').textContent = window.u_d_speed_reducer;
 
-      document.getElementById('right_left_speed_input').value = window.right_left_speed;
-      document.getElementById('up_down_speed_input').value = window.up_down_speed;
+      document.getElementById('right_speed_input').value = window.right_speed;
+      document.getElementById('left_speed_input').value = window.left_speed;
+      document.getElementById('up_speed_input').value = window.up_speed;
+      document.getElementById('down_speed_input').value = window.down_speed;
       document.getElementById('up_threshold_input').value = window.up_threshold;
       document.getElementById('down_threshold_input').value = window.down_threshold;
       document.getElementById('right_threshold_input').value = window.right_threshold;
@@ -100,11 +124,13 @@
       document.getElementById('jaw_threshold_input').value = window.jaw_threshold;
       document.getElementById('mouth_threshold_input').value = window.mouth_threshold;
       document.getElementById('brow_threshold_input').value = window.brow_threshold;
-      document.getElementById('brow_right_left_speed_input').value = window.brow_right_left_speed;
-      document.getElementById('brow_up_down_speed_input').value = window.brow_up_down_speed;
+      document.getElementById('r_l_speed_reducer_input').value = window.r_l_speed_reducer;
+      document.getElementById('u_d_speed_reducer_input').value = window.u_d_speed_reducer;
 
-      document.getElementById('right_left_speed').value = window.right_left_speed;
-      document.getElementById('up_down_speed').value = window.up_down_speed;
+      document.getElementById('right_speed').value = window.right_speed;
+      document.getElementById('left_speed').value = window.left_speed;
+      document.getElementById('up_speed').value = window.up_speed;
+      document.getElementById('down_speed').value = window.down_speed;
       document.getElementById('up_threshold').value = window.up_threshold;
       document.getElementById('down_threshold').value = window.down_threshold;
       document.getElementById('right_threshold').value = window.right_threshold;
@@ -112,8 +138,8 @@
       document.getElementById('jaw_threshold').value = window.jaw_threshold;
       document.getElementById('mouth_threshold').value = window.mouth_threshold;
       document.getElementById('brow_threshold').value = window.brow_threshold;
-      document.getElementById('brow_right_left_speed').value = window.brow_right_left_speed;
-      document.getElementById('brow_up_down_speed').value = window.brow_up_down_speed;
+      document.getElementById('r_l_speed_reducer').value = window.r_l_speed_reducer;
+      document.getElementById('u_d_speed_reducer').value = window.u_d_speed_reducer;
     </script>
     <script type="module" src="./script.js"></script>
     <script>

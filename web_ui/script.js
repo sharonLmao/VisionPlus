@@ -331,9 +331,11 @@ function drawBlendShapes(el, blendShapes) {
     document.title = title;
 
     window.requestAnimationFrame(function () {
+        const right_left_speed = isMovingRight ? window.right_speed : isMovingLeft ? window.left_speed : 0;
+        const up_down_speed = isMovingDown ? window.down_speed : isMovingUp ? window.up_speed : 0;
         window.electronAPI.send('face-detection', {
-            x: (isMovingRight ? rightVector : isMovingLeft ? leftVector : 0) * (isJawOpen ? window.right_left_speed * window.brow_right_left_speed / 100 : window.right_left_speed),
-            y: (isMovingDown ? downVector : isMovingUp ? upVector : 0) * (isJawOpen ? window.up_down_speed * window.brow_up_down_speed / 100 : window.up_down_speed),
+            x: (isMovingRight ? rightVector : isMovingLeft ? leftVector : 0) * (isJawOpen ? right_left_speed * window.r_l_speed_reducer / 100 : right_left_speed),
+            y: (isMovingDown ? downVector : isMovingUp ? upVector : 0) * (isJawOpen ? up_down_speed * window.u_d_speed_reducer / 100 : up_down_speed),
             puck: isMouthPuck,
             puck_vector: mouthVector
         });
