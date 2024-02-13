@@ -186,10 +186,6 @@ footer {
   cursor: pointer;
 }
 
-.slider[disabled]::-moz-range-thumb, .slider[disabled]::-webkit-slider-thumb  {
-  background: rgb(59, 80, 72);
-}
-
 #main {
   display: flex;
 }

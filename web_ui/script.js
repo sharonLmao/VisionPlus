@@ -229,7 +229,7 @@ function drawBlendShapes(el, blendShapes) {
     if (!blendShapes.length) {
         return;
     }
-    console.log(blendShapes[0]);
+    // console.log(blendShapes[0]);
     // Send to backend
     const _neutral = blendShapes[0].categories[0];
     const browDownLeft = blendShapes[0].categories[1];
