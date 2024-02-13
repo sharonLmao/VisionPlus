@@ -1,0 +1,408 @@
+// Copyright 2023 The MediaPipe Authors.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//      http://www.apache.org/licenses/LICENSE-2.0
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
+const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision;
+const demosSection = document.getElementById("demos");
+const imageBlendShapes = document.getElementById("image-blend-shapes");
+const videoBlendShapes = document.getElementById("video-blend-shapes");
+let faceLandmarker;
+let runningMode = "IMAGE";
+// let enableWebcamButton;
+let webcamRunning = false;
+const videoWidth = 480;
+// Before we can use HandLandmarker class we must wait for it to finish
+// loading. Machine Learning models can be large and take a moment to
+// get everything needed to run.
+async function createFaceLandmarker() {
+    const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
+    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
+        baseOptions: {
+            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
+            delegate: "GPU"
+        },
+        outputFaceBlendshapes: true,
+        runningMode,
+        numFaces: 1
+    });
+    demosSection.classList.remove("invisible");
+}
+createFaceLandmarker();
+/********************************************************************
+// Demo 1: Grab a bunch of images from the page and detection them
+// upon click.
+********************************************************************/
+// In this demo, we have put all our clickable images in divs with the
+// CSS class 'detectionOnClick'. Lets get all the elements that have
+// this class.
+const imageContainers = document.getElementsByClassName("detectOnClick");
+// Now let's go through all of these and add a click event listener.
+for (let imageContainer of imageContainers) {
+    // Add event listener to the child element whichis the img element.
+    imageContainer.children[0].addEventListener("click", handleClick);
+}
+// When an image is clicked, let's detect it and display results!
+async function handleClick(event) {
+    if (!faceLandmarker) {
+        // console.log("Wait for faceLandmarker to load before clicking!");
+        return;
+    }
+    if (runningMode === "VIDEO") {
+        runningMode = "IMAGE";
+        await faceLandmarker.setOptions({ runningMode });
+    }
+    // Remove all landmarks drawed before
+    const allCanvas = event.target.parentNode.getElementsByClassName("canvas");
+    for (var i = allCanvas.length - 1; i >= 0; i--) {
+        const n = allCanvas[i];
+        n.parentNode.removeChild(n);
+    }
+    // We can call faceLandmarker.detect as many times as we like with
+    // different image data each time. This returns a promise
+    // which we wait to complete and then call a function to
+    // print out the results of the prediction.
+    const faceLandmarkerResult = faceLandmarker.detect(event.target);
+    const canvas = document.createElement("canvas");
+    canvas.setAttribute("class", "canvas");
+    canvas.setAttribute("width", event.target.naturalWidth + "px");
+    canvas.setAttribute("height", event.target.naturalHeight + "px");
+    canvas.style.left = "0px";
+    canvas.style.top = "0px";
+    canvas.style.width = `${event.target.width}px`;
+    canvas.style.height = `${event.target.height}px`;
+    event.target.parentNode.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    const drawingUtils = new DrawingUtils(ctx);
+    for (const landmarks of faceLandmarkerResult.faceLandmarks) {
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: "#C0C0C070", lineWidth: 1 });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: "#FF3030" });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, { color: "#FF3030" });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: "#30FF30" });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW, { color: "#30FF30" });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#E0E0E0" });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, {
+            color: "#E0E0E0"
+        });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: "#FF3030" });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: "#30FF30" });
+    }
+    drawBlendShapes(imageBlendShapes, faceLandmarkerResult.faceBlendshapes);
+}
+/********************************************************************
+// Demo 2: Continuously grab image from webcam stream and detect it.
+********************************************************************/
+const video = document.getElementById("webcam");
+const canvasElement = document.getElementById("output_canvas");
+const canvasCtx = canvasElement.getContext("2d");
+// Check if webcam access is supported.
+// function hasGetUserMedia() {
+//     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+// }
+// If webcam supported, add event listener to button for when user
+// wants to activate it.
+// if (hasGetUserMedia()) {
+//     enableWebcamButton = document.getElementById("webcamButton");
+//     enableWebcamButton.addEventListener("click", function () {
+//         enableCam(document.getElementById('cameraSelect').value);
+//     });
+// }
+// else {
+//     console.warn("getUserMedia() is not supported by your browser");
+// }
+// Enable the live webcam view and start detection.
+function enableCam(deviceId, stayOnline = false) {
+    if (!faceLandmarker) {
+        // console.log("Wait! faceLandmarker not loaded yet.");
+        return;
+    }
+    if (stayOnline && webcamRunning) webcamRunning = false;
+    setTimeout(function () {
+        if (webcamRunning === true && !stayOnline) {
+            webcamRunning = false;
+            // enableWebcamButton.innerText = "ENABLE PREDICTIONS";
+        }
+        else {
+            webcamRunning = true;
+            // enableWebcamButton.innerText = "DISABLE PREDICTIONS";
+        }
+        // getUsermedia parameters.
+        const constraints = {
+            video: {
+                deviceId: { exact: deviceId }
+            }
+        };
+        // Activate the webcam stream.
+        navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+            video.srcObject = stream;
+            window.electronAPI.send('loaded', 'ok');
+            video.addEventListener("loadeddata", predictWebcam);
+        });
+    }, 16);
+}
+window.enableCam = enableCam;
+let lastVideoTime = -1;
+let results = undefined;
+const drawingUtils = new DrawingUtils(canvasCtx);
+async function predictWebcam() {
+    const radio = video.videoHeight / video.videoWidth;
+    video.style.width = videoWidth + "px";
+    video.style.height = videoWidth * radio + "px";
+    canvasElement.style.width = videoWidth + "px";
+    canvasElement.style.height = videoWidth * radio + "px";
+    canvasElement.width = video.videoWidth;
+    canvasElement.height = video.videoHeight;
+    // Now let's start detecting the stream.
+    if (runningMode === "IMAGE") {
+        runningMode = "VIDEO";
+        await faceLandmarker.setOptions({ runningMode: runningMode });
+    }
+    let startTimeMs = performance.now();
+    if (lastVideoTime !== video.currentTime) {
+        lastVideoTime = video.currentTime;
+        results = faceLandmarker.detectForVideo(video, startTimeMs);
+    }
+    if (results.faceLandmarks) {
+        for (const landmarks of results.faceLandmarks) {
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: "#C0C0C070", lineWidth: 1 });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: "#FF3030" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, { color: "#FF3030" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: "#30FF30" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW, { color: "#30FF30" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#E0E0E0" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "#E0E0E0" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: "#FF3030" });
+            drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: "#30FF30" });
+        }
+    }
+    drawBlendShapes(videoBlendShapes, results.faceBlendshapes);
+    // Call this function again to keep predicting when the browser is ready.
+    if (webcamRunning === true) {
+        window.requestAnimationFrame(predictWebcam);
+    }
+}
+let isUpGlobal = false;
+let isDownGlobal = false;
+let isLeftGlobal = false;
+let isRightGlobal = false;
+let isBrowUpGlobal = false;
+let isJawOpenGlobal = false;
+function drawBlendShapes(el, blendShapes) {
+    if (!blendShapes.length) {
+        return;
+    }
+    console.log(blendShapes[0]);
+    // Send to backend
+    const browDownLeft = blendShapes[0].categories[1];
+    const browDownRight = blendShapes[0].categories[2];
+    const browInnerUp = blendShapes[0].categories[3];
+    const eyeBlinkLeft = blendShapes[0].categories[9];
+    const eyeBlinkRight = blendShapes[0].categories[10];
+    const eyeLookDownLeft = blendShapes[0].categories[11];
+    const eyeLookDownRight = blendShapes[0].categories[12];
+    const eyeLookInLeft = blendShapes[0].categories[13];
+    const eyeLookInRight = blendShapes[0].categories[14];
+    const eyeLookOutLeft = blendShapes[0].categories[15];
+    const eyeLookOutRight = blendShapes[0].categories[16];
+    const eyeLookUpLeft = blendShapes[0].categories[17];
+    const eyeLookUpRight = blendShapes[0].categories[18];
+    const eyeSquintLeft = blendShapes[0].categories[19];
+    const eyeSquintRight = blendShapes[0].categories[20];
+    const eyeWideLeft = blendShapes[0].categories[21];
+    const eyeWideRight = blendShapes[0].categories[22];
+    const jawOpen = blendShapes[0].categories[25];
+    const mouthPucker = blendShapes[0].categories[38];
+    // up
+    let isMovingUp = (eyeLookUpLeft.score >= window.up_threshold && eyeLookUpRight.score >= window.up_threshold);
+    let upVector = -1 * ((eyeLookUpLeft.score + eyeLookUpRight.score) / 2);
+    if (isMovingUp) {
+        if (!isUpGlobal) {
+            isUpGlobal = true;
+            window.electronAPI.send('Play', 'Up');
+        }
+    } else {
+        if (isUpGlobal) {
+            isUpGlobal = false;
+        }
+    }
+    // down
+    let isMovingDown = (eyeLookDownLeft.score >= window.down_threshold && eyeLookDownRight.score >= window.down_threshold);
+    let downVector = (eyeLookDownLeft.score + eyeLookDownRight.score) / 2;
+    if (isMovingDown) {
+        if (!isDownGlobal) {
+            isDownGlobal = true;
+            window.electronAPI.send('Play', 'Down');
+        }
+    } else {
+        if (isDownGlobal) {
+            isDownGlobal = false;
+        }
+    }
+    // right
+    let isMovingRight = eyeLookOutRight.score >= window.right_threshold;
+    let rightVector = eyeLookOutRight.score;
+    if (isMovingRight) {
+        if (!isRightGlobal) {
+            isRightGlobal = true;
+            window.electronAPI.send('Play', 'Right');
+        }
+    } else {
+        if (isRightGlobal) {
+            isRightGlobal = false;
+        }
+    }
+    // left
+    let isMovingLeft = eyeLookInRight.score >= window.left_threshold;
+    let leftVector = -1 * eyeLookInRight.score;
+    if (isMovingLeft) {
+        if (!isLeftGlobal) {
+            isLeftGlobal = true;
+            window.electronAPI.send('Play', 'Left');
+        }
+    } else {
+        if (isLeftGlobal) {
+            isLeftGlobal = false;
+        }
+    }
+    // brow
+    let isBrowUp = browInnerUp.score >= window.brow_threshold;
+    let browVector = browInnerUp.score;
+    if (isBrowUp) {
+        if (!isBrowUpGlobal) {
+            isBrowUpGlobal = true;
+            window.electronAPI.send('Play', 'BrowUp');
+        }
+    } else {
+        if (isBrowUpGlobal) {
+            isBrowUpGlobal = false;
+        }
+    }
+    // jaw
+    let isJawOpen = jawOpen.score >= window.jaw_threshold;
+    let jawVector = jawOpen.score;
+    if (isJawOpen) {
+        if (!isJawOpenGlobal) {
+            isJawOpenGlobal = true;
+            window.electronAPI.send('Play', 'JawOpen');
+        }
+    } else {
+        if (isJawOpenGlobal) {
+            isJawOpenGlobal = false;
+        }
+    }
+    // mouth - MouseDownMouseUp
+    let isMouthPuck = mouthPucker.score >= window.mouth_threshold;
+    let mouthVector = mouthPucker.score;
+
+    let title = '';
+    if (isMovingDown) {
+        // console.log("Down", downVector);
+        title += ' - Down';
+    } else if (isMovingUp) {
+        // console.log("Up", upVector);
+        title += ' - Up';
+    }
+    if (isMovingRight) {
+        // console.log("Right", rightVector);
+        title += ' - Right';
+    } else if (isMovingLeft) {
+        // console.log("Left", leftVector);
+        title += ' - Left';
+    }
+    if (isBrowUp) {
+        // console.log("Right", rightVector);
+        title += ' - BrowUp';
+    }
+    if (isJawOpen) {
+        // console.log("Right", rightVector);
+        title += ' - JawOpen(SLOW)';
+    }
+    if (isMouthPuck) {
+        // console.log("Right", rightVector);
+        title += ' - MouthPuck';
+    }
+
+    document.title = title;
+
+    window.requestAnimationFrame(function () {
+        window.electronAPI.send('face-detection', {
+            x: (isMovingRight ? rightVector : isMovingLeft ? leftVector : 0) * (isJawOpen ? window.right_left_speed * window.brow_right_left_speed / 100 : window.right_left_speed),
+            y: (isMovingDown ? downVector : isMovingUp ? upVector : 0) * (isJawOpen ? window.up_down_speed * window.brow_up_down_speed / 100 : window.up_down_speed),
+            puck: isMouthPuck,
+            puck_vector: mouthVector
+        });
+    });
+    // ------
+    let htmlMaker = "";
+    blendShapes[0].categories.map((shape) => {
+        let isBold = '';
+        let color = '';
+        if (shape.categoryName == 'eyeLookUpLeft' ||
+        shape.categoryName == 'eyeLookUpRight' ||
+        shape.categoryName == 'eyeLookDownLeft' ||
+        shape.categoryName == 'eyeLookDownRight' ||
+        shape.categoryName == 'eyeLookOutRight' ||
+        shape.categoryName == 'eyeLookInRight' ||
+        shape.categoryName == 'browInnerUp' ||
+        shape.categoryName == 'jawOpen' ||
+        shape.categoryName == 'mouthPucker') isBold = 'font-weight:bold;';
+        // up
+        if (shape.categoryName == 'eyeLookUpLeft' ||
+        shape.categoryName == 'eyeLookUpRight') color = 'green';
+        // down
+        if (shape.categoryName == 'eyeLookDownLeft' ||
+        shape.categoryName == 'eyeLookDownRight') color = 'red';
+        // right
+        if (shape.categoryName == 'eyeLookOutRight') color = 'blue';
+        // left
+        if (shape.categoryName == 'eyeLookInRight') color = 'purple';
+        // brow
+        if (shape.categoryName == 'browInnerUp') color = 'brown';
+        // jaw
+        if (shape.categoryName == 'jawOpen') color = 'orange';
+        // mouth
+        if (shape.categoryName == 'mouthPucker') color = 'pink';
+        //
+        htmlMaker += `
+      <li class="blend-shapes-item">
+        <span class="blend-shapes-label" style="${isBold}color:${color};">${shape.displayName || shape.categoryName}</span>
+        <span class="blend-shapes-value" style="width: calc(${+shape.score * 100}% - 120px)">${(+shape.score).toFixed(4)}</span>
+      </li>
+    `;
+    });
+    el.innerHTML = `
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:green;">isMovingUp: ${isMovingUp}</span>
+      <span class="blend-shapes-value" style="width: calc(${+upVector * 100}% - 120px)">${(+upVector).toFixed(4)}</span>
+    </li>
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:red;">isMovingDown: ${isMovingDown}</span>
+      <span class="blend-shapes-value" style="width: calc(${+downVector * 100}% - 120px)">${(+downVector).toFixed(4)}</span>
+    </li>
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:blue;">isMovingRight: ${isMovingRight}</span>
+      <span class="blend-shapes-value" style="width: calc(${+rightVector * 100}% - 120px)">${(+rightVector).toFixed(4)}</span>
+    </li>
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:purple;">isMovingLeft: ${isMovingLeft}</span>
+      <span class="blend-shapes-value" style="width: calc(${+leftVector * 100}% - 120px)">${(+leftVector).toFixed(4)}</span>
+    </li>
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:brown;">isBrowUp: ${isBrowUp}</span>
+      <span class="blend-shapes-value" style="width: calc(${+browVector * 100}% - 120px)">${(+browVector).toFixed(4)}</span>
+    </li>
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:orange;">isJawOpen: ${isJawOpen}</span>
+      <span class="blend-shapes-value" style="width: calc(${+jawVector * 100}% - 120px)">${(+jawVector).toFixed(4)}</span>
+    </li>
+    <li class="blend-shapes-item">
+      <span class="blend-shapes-label" style="color:pink;">isMouthPuck: ${isMouthPuck}</span>
+      <span class="blend-shapes-value" style="width: calc(${+mouthVector * 100}% - 120px)">${(+mouthVector).toFixed(4)}</span>
+    </li>` + htmlMaker;
+}
