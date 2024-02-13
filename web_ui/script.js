@@ -10,7 +10,7 @@
 // limitations under the License.
 import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
 const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision;
-const demosSection = document.getElementById("demos");
+const mainSection = document.getElementById("main");
 const imageBlendShapes = document.getElementById("image-blend-shapes");
 const videoBlendShapes = document.getElementById("video-blend-shapes");
 let faceLandmarker;
@@ -32,7 +32,8 @@ async function createFaceLandmarker() {
         runningMode,
         numFaces: 1
     });
-    demosSection.classList.remove("invisible");
+    mainSection.classList.remove("invisible");
+    window.electronAPI.send('loaded', 'ok');
 }
 createFaceLandmarker();
 /********************************************************************
@@ -141,8 +142,10 @@ function enableCam(deviceId, stayOnline = false) {
         // Activate the webcam stream.
         navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
             video.srcObject = stream;
-            window.electronAPI.send('loaded', 'ok');
             video.addEventListener("loadeddata", predictWebcam);
+            setTimeout(() => window.electronAPI.send('webcam_active', 'ok'), 1000);
+        }).catch((e) => {
+            window.electronAPI.send('error', 'ok');
         });
     }, 16);
 }

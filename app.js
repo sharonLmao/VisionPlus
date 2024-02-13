@@ -1,19 +1,15 @@
 const { app, BrowserWindow, screen, ipcMain } = require('electron');
 const path = require('path');
-const robot = require('@hurdlegroup/robotjs');
 const sound = require('sound-play')
-
-function playSound(file) {
-    console.log("Play", file)
-    sound.play(path.join(__dirname, file));
-}
 
 const windowWidth = 32;
 const windowHeight = 32;
+let volume = 0.5;
 let mouse_win, face_detector_win;
 let screen_real_width, screen_real_height;
 let screen_hz, refresh_speed, move_speed;
 let current_x, current_y;
+let muted = false;
 
 function moveMouse() {
     if (current_x < 0) current_x = 0;
@@ -21,6 +17,16 @@ function moveMouse() {
     if (current_x > screen_real_width - windowWidth) current_x = screen_real_width - windowWidth;
     if (current_y > screen_real_height - windowWidth) current_y = screen_real_height - windowWidth;
     mouse_win.setPosition(Math.floor(current_x), Math.floor(current_y));
+}
+
+async function playSound(file) {
+    if (muted) return;
+    try {
+        await sound.play(path.join(__dirname, file), volume);
+        // console.log("Play", file)
+    } catch(e) {
+        // console.log("Error playing file", file, e)
+    }
 }
 
 function createMouse() {
@@ -75,8 +81,22 @@ function createMouse() {
     }, refresh_speed);
     let is_mouse_down = false;
     playSound('sounds/Loading.mp3');
+    ipcMain.on('mute', (event, data) => {
+        playSound('sounds/Mute.mp3');
+        muted = true;
+    });
+    ipcMain.on('unmute', (event, data) => {
+        muted = false;
+        playSound('sounds/Unmute.mp3');
+    });
     ipcMain.on('loaded', (event, data) => {
         playSound('sounds/Loaded.mp3');
+    });
+    ipcMain.on('webcam_active', (event, data) => {
+        playSound('sounds/Active.mp3');
+    });
+    ipcMain.on('error', (event, data) => {
+        playSound('sounds/Error.mp3');
     });
     ipcMain.on('center', (event, data) => {
         playSound('sounds/Center.mp3');
@@ -95,19 +115,15 @@ function createMouse() {
                 is_mouse_down = true;
                 // optionally do extra work with data.puck_vector
                 // api to click mouse down on data.x data.y in the background
-                // robot.moveMouseSmooth(current_x, current_y);
-                // robot.mouseToggle("down");
                 playSound('sounds/MouseDown.mp3');
             }
         } else { // stopped pucking with mouth...
             if (is_mouse_down) {
                 is_mouse_down = false;
                 // api to release mouse up
-                // robot.mouseToggle("up");
                 playSound('sounds/MouseUp.mp3');
             }
         }
-        // console.log("new xy", {current_x, current_y})
         // Handle the face detection outputs here
         // moveMouse(data.x, data.y);
     });
