@@ -114,7 +114,7 @@ function createMouse() {
     ipcMain.on('Play', (event, data) => {
         playSound('sounds/' + data + '.mp3');
     });
-    let is_mouse_down = false;
+    // let is_mouse_down = false;
     ipcMain.on('face-detection', (event, data) => {
         // console.log("incoming face detection", data);
         // data.everything
@@ -147,14 +147,12 @@ function createMouse() {
         const normalized_x = (data.flags.rightVector * data.flags.right_speed) - (data.flags.leftVector * data.flags.left_speed);
         const normalized_y = (data.flags.downVector * data.flags.down_speed) - (data.flags.upVector * data.flags.up_speed);
         // Scale by screen dimensions
-        const pixel_displacement_x = normalized_x * screen_real_width / 2;
-        const pixel_displacement_y = normalized_y * screen_real_height / 2;
+        const pixel_displacement_x = normalized_x * center_x;
+        const pixel_displacement_y = normalized_y * center_y;
         // Calculate new mouse position
-        const current_mouse_x = center_x; // Assuming starting from center
-        const current_mouse_y = center_y;
-        current_x = current_mouse_x + pixel_displacement_x;
-        current_y = current_mouse_y + pixel_displacement_y;
-        console.log("New Mouse Position (x, y):", current_x, current_y);
+        current_x = center_x + pixel_displacement_x + data.flags.x_offset;
+        current_y = center_y + pixel_displacement_y + data.flags.y_offset;
+        console.log("New Mouse Position (x, y):", {current_x, current_y}, {screen_real_width, screen_real_height, center_x, center_y, pixel_displacement_x, pixel_displacement_y, normalized_x, normalized_y}, data.flags);
         // current_x += data.x;
         // current_y += data.y;
         // if (data.puck) { // pucking with mouth...

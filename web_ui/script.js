@@ -365,35 +365,35 @@ function drawBlendShapes(el, blendShapes) {
     let isMouthPuck = mouthPucker.score >= window.mouth_threshold;
     let mouthVector = mouthPucker.score;
 
-    let title = '';
-    if (isMovingDown) {
-        // console.log("Down", downVector);
-        title += ' - Down';
-    } else if (isMovingUp) {
-        // console.log("Up", upVector);
-        title += ' - Up';
-    }
-    if (isMovingRight) {
-        // console.log("Right", rightVector);
-        title += ' - Right';
-    } else if (isMovingLeft) {
-        // console.log("Left", leftVector);
-        title += ' - Left';
-    }
-    if (isBrowUp) {
-        // console.log("Right", rightVector);
-        title += ' - BrowUp';
-    }
-    if (isJawOpen) {
-        // console.log("Right", rightVector);
-        title += ' - JawOpen(SLOW)';
-    }
-    if (isMouthPuck) {
-        // console.log("Right", rightVector);
-        title += ' - MouthPuck';
-    }
+    // let title = '';
+    // if (isMovingDown) {
+    //     // console.log("Down", downVector);
+    //     title += ' - Down';
+    // } else if (isMovingUp) {
+    //     // console.log("Up", upVector);
+    //     title += ' - Up';
+    // }
+    // if (isMovingRight) {
+    //     // console.log("Right", rightVector);
+    //     title += ' - Right';
+    // } else if (isMovingLeft) {
+    //     // console.log("Left", leftVector);
+    //     title += ' - Left';
+    // }
+    // if (isBrowUp) {
+    //     // console.log("Right", rightVector);
+    //     title += ' - BrowUp';
+    // }
+    // if (isJawOpen) {
+    //     // console.log("Right", rightVector);
+    //     title += ' - JawOpen(SLOW)';
+    // }
+    // if (isMouthPuck) {
+    //     // console.log("Right", rightVector);
+    //     title += ' - MouthPuck';
+    // }
 
-    document.title = title;
+    // document.title = title;
 
     window.requestAnimationFrame(function () {
         // const right_left_speed = isMovingRight ? window.right_speed : isMovingLeft ? window.left_speed : 0;
@@ -408,6 +408,8 @@ function drawBlendShapes(el, blendShapes) {
                 down_speed: window.down_speed,
                 left_speed: window.left_speed,
                 up_speed: window.up_speed,
+                x_offset: window.x_offset,
+                y_offset: window.y_offset,
                 // isMovingRight,
                 rightVector,
                 //
