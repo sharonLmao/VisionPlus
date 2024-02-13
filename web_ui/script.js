@@ -219,10 +219,10 @@ async function predictWebcam() {
         window.requestAnimationFrame(predictWebcam);
     }
 }
-let isUpGlobal = false;
-let isDownGlobal = false;
-let isLeftGlobal = false;
-let isRightGlobal = false;
+// let isUpGlobal = false;
+// let isDownGlobal = false;
+// let isLeftGlobal = false;
+// let isRightGlobal = false;
 let isBrowUpGlobal = false;
 let isJawOpenGlobal = false;
 function drawBlendShapes(el, blendShapes) {
@@ -231,113 +231,114 @@ function drawBlendShapes(el, blendShapes) {
     }
     // console.log(blendShapes[0]);
     // Send to backend
-    const _neutral = blendShapes[0].categories[0];
-    const browDownLeft = blendShapes[0].categories[1];
-    const browDownRight = blendShapes[0].categories[2];
-    const browInnerUp = blendShapes[0].categories[3];
-    const browOuterUpLeft = blendShapes[0].categories[4];
-    const browOuterUpRight = blendShapes[0].categories[5];
-    const cheekPuff = blendShapes[0].categories[6];
-    const cheekSquintLeft = blendShapes[0].categories[7];
-    const cheekSquintRight = blendShapes[0].categories[8];
-    const eyeBlinkLeft = blendShapes[0].categories[9];
-    const eyeBlinkRight = blendShapes[0].categories[10];
-    const eyeLookDownLeft = blendShapes[0].categories[11];
-    const eyeLookDownRight = blendShapes[0].categories[12];
-    const eyeLookInLeft = blendShapes[0].categories[13];
-    const eyeLookInRight = blendShapes[0].categories[14];
-    const eyeLookOutLeft = blendShapes[0].categories[15];
-    const eyeLookOutRight = blendShapes[0].categories[16];
-    const eyeLookUpLeft = blendShapes[0].categories[17];
-    const eyeLookUpRight = blendShapes[0].categories[18];
-    const eyeSquintLeft = blendShapes[0].categories[19];
-    const eyeSquintRight = blendShapes[0].categories[20];
-    const eyeWideLeft = blendShapes[0].categories[21];
-    const eyeWideRight = blendShapes[0].categories[22];
-    const jawForward = blendShapes[0].categories[23];
-    const jawLeft = blendShapes[0].categories[24];
-    const jawOpen = blendShapes[0].categories[25];
-    const jawRight = blendShapes[0].categories[26];
-    const mouthClose = blendShapes[0].categories[27];
-    const mouthDimpleLeft = blendShapes[0].categories[28];
-    const mouthDimpleRight = blendShapes[0].categories[29];
-    const mouthFrownLeft = blendShapes[0].categories[30];
-    const mouthFrownRight = blendShapes[0].categories[31];
-    const mouthFunnel = blendShapes[0].categories[32];
-    const mouthLeft = blendShapes[0].categories[33];
-    const mouthLowerDownLeft = blendShapes[0].categories[34];
-    const mouthLowerDownRight = blendShapes[0].categories[35];
-    const mouthPressLeft = blendShapes[0].categories[36];
-    const mouthPressRight = blendShapes[0].categories[37];
-    const mouthPucker = blendShapes[0].categories[38];
-    const mouthRight = blendShapes[0].categories[39];
-    const mouthRollLower = blendShapes[0].categories[40];
-    const mouthRollUpper = blendShapes[0].categories[41];
-    const mouthShrugLower = blendShapes[0].categories[42];
-    const mouthShrugUpper = blendShapes[0].categories[43];
-    const mouthSmileLeft = blendShapes[0].categories[44];
-    const mouthSmileRight = blendShapes[0].categories[45];
-    const mouthStretchLeft = blendShapes[0].categories[46];
-    const mouthStretchRight = blendShapes[0].categories[47];
-    const mouthUpperUpLeft = blendShapes[0].categories[48];
-    const mouthUpperUpRight = blendShapes[0].categories[49];
-    const noseSneerLeft = blendShapes[0].categories[50];
-    const noseSneerRight = blendShapes[0].categories[51];
+    const categories = {};
+    categories._neutral = blendShapes[0].categories[0];
+    categories.browDownLeft = blendShapes[0].categories[1];
+    categories.browDownRight = blendShapes[0].categories[2];
+    categories.browInnerUp = blendShapes[0].categories[3];
+    categories.browOuterUpLeft = blendShapes[0].categories[4];
+    categories.browOuterUpRight = blendShapes[0].categories[5];
+    categories.cheekPuff = blendShapes[0].categories[6];
+    categories.cheekSquintLeft = blendShapes[0].categories[7];
+    categories.cheekSquintRight = blendShapes[0].categories[8];
+    categories.eyeBlinkLeft = blendShapes[0].categories[9];
+    categories.eyeBlinkRight = blendShapes[0].categories[10];
+    categories.eyeLookDownLeft = blendShapes[0].categories[11];
+    categories.eyeLookDownRight = blendShapes[0].categories[12];
+    categories.eyeLookInLeft = blendShapes[0].categories[13];
+    categories.eyeLookInRight = blendShapes[0].categories[14];
+    categories.eyeLookOutLeft = blendShapes[0].categories[15];
+    categories.eyeLookOutRight = blendShapes[0].categories[16];
+    categories.eyeLookUpLeft = blendShapes[0].categories[17];
+    categories.eyeLookUpRight = blendShapes[0].categories[18];
+    categories.eyeSquintLeft = blendShapes[0].categories[19];
+    categories.eyeSquintRight = blendShapes[0].categories[20];
+    categories.eyeWideLeft = blendShapes[0].categories[21];
+    categories.eyeWideRight = blendShapes[0].categories[22];
+    categories.jawForward = blendShapes[0].categories[23];
+    categories.jawLeft = blendShapes[0].categories[24];
+    categories.jawOpen = blendShapes[0].categories[25];
+    categories.jawRight = blendShapes[0].categories[26];
+    categories.mouthClose = blendShapes[0].categories[27];
+    categories.mouthDimpleLeft = blendShapes[0].categories[28];
+    categories.mouthDimpleRight = blendShapes[0].categories[29];
+    categories.mouthFrownLeft = blendShapes[0].categories[30];
+    categories.mouthFrownRight = blendShapes[0].categories[31];
+    categories.mouthFunnel = blendShapes[0].categories[32];
+    categories.mouthLeft = blendShapes[0].categories[33];
+    categories.mouthLowerDownLeft = blendShapes[0].categories[34];
+    categories.mouthLowerDownRight = blendShapes[0].categories[35];
+    categories.mouthPressLeft = blendShapes[0].categories[36];
+    categories.mouthPressRight = blendShapes[0].categories[37];
+    categories.mouthPucker = blendShapes[0].categories[38];
+    categories.mouthRight = blendShapes[0].categories[39];
+    categories.mouthRollLower = blendShapes[0].categories[40];
+    categories.mouthRollUpper = blendShapes[0].categories[41];
+    categories.mouthShrugLower = blendShapes[0].categories[42];
+    categories.mouthShrugUpper = blendShapes[0].categories[43];
+    categories.mouthSmileLeft = blendShapes[0].categories[44];
+    categories.mouthSmileRight = blendShapes[0].categories[45];
+    categories.mouthStretchLeft = blendShapes[0].categories[46];
+    categories.mouthStretchRight = blendShapes[0].categories[47];
+    categories.mouthUpperUpLeft = blendShapes[0].categories[48];
+    categories.mouthUpperUpRight = blendShapes[0].categories[49];
+    categories.noseSneerLeft = blendShapes[0].categories[50];
+    categories.noseSneerRight = blendShapes[0].categories[51];
     // up
-    let isMovingUp = (eyeLookUpLeft.score >= window.up_threshold && eyeLookUpRight.score >= window.up_threshold);
-    let upVector = (eyeLookUpLeft.score + eyeLookUpRight.score) / 2;
-    if (isMovingUp) {
-        if (!isUpGlobal) {
-            isUpGlobal = true;
-            window.electronAPI.send('Play', 'Up');
-        }
-    } else {
-        if (isUpGlobal) {
-            isUpGlobal = false;
-        }
-    }
+    let isMovingUp = (categories.eyeLookUpLeft.score >= window.up_threshold && categories.eyeLookUpRight.score >= window.up_threshold);
+    let upVector = (categories.eyeLookUpLeft.score + categories.eyeLookUpRight.score) / 2;
+    // if (isMovingUp) {
+    //     if (!isUpGlobal) {
+    //         isUpGlobal = true;
+    //         window.electronAPI.send('Play', 'Up');
+    //     }
+    // } else {
+    //     if (isUpGlobal) {
+    //         isUpGlobal = false;
+    //     }
+    // }
     // down
-    let isMovingDown = (eyeLookDownLeft.score >= window.down_threshold && eyeLookDownRight.score >= window.down_threshold);
-    let downVector = (eyeLookDownLeft.score + eyeLookDownRight.score) / 2;
-    if (isMovingDown) {
-        if (!isDownGlobal) {
-            isDownGlobal = true;
-            window.electronAPI.send('Play', 'Down');
-        }
-    } else {
-        if (isDownGlobal) {
-            isDownGlobal = false;
-        }
-    }
+    let isMovingDown = (categories.eyeLookDownLeft.score >= window.down_threshold && categories.eyeLookDownRight.score >= window.down_threshold);
+    let downVector = (categories.eyeLookDownLeft.score + categories.eyeLookDownRight.score) / 2;
+    // if (isMovingDown) {
+    //     if (!isDownGlobal) {
+    //         isDownGlobal = true;
+    //         window.electronAPI.send('Play', 'Down');
+    //     }
+    // } else {
+    //     if (isDownGlobal) {
+    //         isDownGlobal = false;
+    //     }
+    // }
     // right
-    let isMovingRight = eyeLookOutRight.score >= window.right_threshold;
-    let rightVector = eyeLookOutRight.score;
-    if (isMovingRight) {
-        if (!isRightGlobal) {
-            isRightGlobal = true;
-            window.electronAPI.send('Play', 'Right');
-        }
-    } else {
-        if (isRightGlobal) {
-            isRightGlobal = false;
-        }
-    }
+    let isMovingRight = categories.eyeLookOutRight.score >= window.right_threshold;
+    let rightVector = categories.eyeLookOutRight.score;
+    // if (isMovingRight) {
+    //     if (!isRightGlobal) {
+    //         isRightGlobal = true;
+    //         window.electronAPI.send('Play', 'Right');
+    //     }
+    // } else {
+    //     if (isRightGlobal) {
+    //         isRightGlobal = false;
+    //     }
+    // }
     // left
-    let isMovingLeft = eyeLookInRight.score >= window.left_threshold;
-    let leftVector = eyeLookInRight.score;
-    if (isMovingLeft) {
-        if (!isLeftGlobal) {
-            isLeftGlobal = true;
-            window.electronAPI.send('Play', 'Left');
-        }
-    } else {
-        if (isLeftGlobal) {
-            isLeftGlobal = false;
-        }
-    }
+    let isMovingLeft = categories.eyeLookInRight.score >= window.left_threshold;
+    let leftVector = categories.eyeLookInRight.score;
+    // if (isMovingLeft) {
+    //     if (!isLeftGlobal) {
+    //         isLeftGlobal = true;
+    //         window.electronAPI.send('Play', 'Left');
+    //     }
+    // } else {
+    //     if (isLeftGlobal) {
+    //         isLeftGlobal = false;
+    //     }
+    // }
     // brow
-    let isBrowUp = browInnerUp.score >= window.brow_threshold;
-    let browVector = browInnerUp.score;
+    let isBrowUp = categories.browInnerUp.score >= window.brow_threshold;
+    let browVector = categories.browInnerUp.score;
     if (isBrowUp) {
         if (!isBrowUpGlobal) {
             isBrowUpGlobal = true;
@@ -349,8 +350,8 @@ function drawBlendShapes(el, blendShapes) {
         }
     }
     // jaw
-    let isJawOpen = jawOpen.score >= window.jaw_threshold;
-    let jawVector = jawOpen.score;
+    let isJawOpen = categories.jawOpen.score >= window.jaw_threshold;
+    let jawVector = categories.jawOpen.score;
     if (isJawOpen) {
         if (!isJawOpenGlobal) {
             isJawOpenGlobal = true;
@@ -362,8 +363,8 @@ function drawBlendShapes(el, blendShapes) {
         }
     }
     // mouth - MouseDownMouseUp
-    let isMouthPuck = mouthPucker.score >= window.mouth_threshold;
-    let mouthVector = mouthPucker.score;
+    let isMouthPuck = categories.mouthPucker.score >= window.mouth_threshold;
+    let mouthVector = categories.mouthPucker.score;
 
     // let title = '';
     // if (isMovingDown) {
