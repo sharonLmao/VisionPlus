@@ -157,7 +157,7 @@ function createMouse() {
         const tmp_current_y = center_y + pixel_displacement_y + data.flags.y_offset;
         // if (current_y < tmp_current_y) current_y += 10.0;
         // if (current_y > tmp_current_y) current_y -= 10.0;
-        current_x = tmp_current_y;
+        current_y = tmp_current_y;
         // console.log("New Mouse Position (x, y):", {current_x, current_y}, {screen_real_width, screen_real_height, center_x, center_y, pixel_displacement_x, pixel_displacement_y, normalized_x, normalized_y}, data.flags);
         // current_x += data.x;
         // current_y += data.y;
