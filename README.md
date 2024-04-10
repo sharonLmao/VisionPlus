@@ -1,5 +1,4 @@
-
-החתן# VisionPlus
+# VisionPlus
 
 VisionPlus is a simple demo project that utilizes your webcam to track your mouse around the screen using only your eyes.
 
